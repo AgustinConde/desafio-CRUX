@@ -61,3 +61,21 @@ class PointCrudTests(TestCase):
 
         self.assertRedirects(response, reverse("points:list"))
         self.assertFalse(Point.objects.filter(pk=self.point.pk).exists())
+
+    def test_api_returns_points_as_json(self):
+        response = self.client.get(reverse("points:api-list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {
+            "points": [
+                {
+                    "id": self.point.id,
+                    "name": "Original point",
+                    "description": "Original description",
+                    "latitude": -34.6037,
+                    "longitude": -58.3816,
+                    "status": "active",
+                    "status_label": "Activo",
+                }
+            ]
+        })
