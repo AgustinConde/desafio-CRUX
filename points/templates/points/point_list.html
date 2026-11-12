@@ -1,7 +1,7 @@
 {% extends "points/base.html" %}
 {% load static %}
 
-{% block title %}Listado de puntos{% endblock %}
+{% block title %}Puntos geográficos{% endblock %}
 
 {% block extra_head %}
     <link
@@ -13,11 +13,13 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Listado de puntos</h1>
-
-    <section aria-labelledby="map-title">
-        <h2 id="map-title">Mapa</h2>
-        <p>Seleccioná una ubicación en el mapa para crear un punto.</p>
+    <section class="map-section" aria-label="Mapa de puntos">
+        <div class="map-toolbar">
+            <p>Seleccione una ubicación en el mapa para crear un punto.</p>
+            <button class="button button--primary" type="button" id="new-point-button">
+                Nuevo punto
+            </button>
+        </div>
         <div id="map" class="map" aria-label="Mapa de puntos geográficos"></div>
         <div class="map-legend" aria-label="Referencias del mapa">
             <span><i class="legend-marker legend-marker--active"></i>Activo</span>
@@ -25,7 +27,25 @@
         </div>
     </section>
 
-    {% if points %}
+    <section class="points-panel" aria-labelledby="points-title">
+        <div class="section-heading">
+            <h2 id="points-title">Puntos registrados</h2>
+            <div class="filters">
+                <label>
+                    Buscar
+                    <input type="search" id="point-search" placeholder="Nombre o descripción">
+                </label>
+                <label>
+                    Estado
+                    <select id="status-filter">
+                        <option value="">Todos</option>
+                        <option value="active">Activos</option>
+                        <option value="inactive">Inactivos</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -38,22 +58,132 @@
             </thead>
             <tbody>
                 {% for point in points %}
-                    <tr>
+                    <tr
+                        data-point-id="{{ point.pk }}"
+                        data-status="{{ point.status }}"
+                        data-search="{{ point.name }} {{ point.description }}"
+                    >
                         <td>{{ point.name }}</td>
-                        <td>{{ point.get_status_display }}</td>
+                        <td>
+                            <span class="status-chip status-chip--{{ point.status }}">
+                                {{ point.get_status_display }}
+                            </span>
+                        </td>
                         <td>{{ point.latitude }}</td>
                         <td>{{ point.longitude }}</td>
                         <td>
-                            <a href="{% url 'points:update' point.pk %}">Editar</a>
-                            <a href="{% url 'points:delete' point.pk %}">Eliminar</a>
+                            <div class="table-actions">
+                                <button
+                                    class="icon-action edit-point"
+                                    type="button"
+                                    aria-label="Editar {{ point.name }}"
+                                    data-tooltip="Editar"
+                                >
+                                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                                        <path d="m16.9 3.1 4 4L8 20H4v-4L16.9 3.1ZM14 5l4 4"/>
+                                    </svg>
+                                </button>
+                                <button
+                                    class="icon-action go-point"
+                                    type="button"
+                                    aria-label="Ir a {{ point.name }}"
+                                    data-tooltip="Ir al punto"
+                                >
+                                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                                        <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"/>
+                                        <circle cx="12" cy="9" r="2.2"/>
+                                    </svg>
+                                </button>
+                                <a
+                                    class="icon-action icon-action--danger"
+                                    href="{% url 'points:delete' point.pk %}"
+                                    aria-label="Eliminar {{ point.name }}"
+                                    data-tooltip="Eliminar"
+                                    data-point-name="{{ point.name }}"
+                                >
+                                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                                        <path d="M4 7h16M10 11v6m4-6v6M9 7V4h6v3m-9 0 1 13h10l1-13"/>
+                                    </svg>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-    {% else %}
-        <p>No hay puntos registrados.</p>
-    {% endif %}
+        <p class="empty-state" id="empty-state">No hay puntos que coincidan con el filtro.</p>
+    </section>
+
+    <dialog class="point-modal" id="point-modal">
+        <form method="post" id="point-form">
+            {% csrf_token %}
+            <div class="modal-heading">
+                <div>
+                    <h2 id="modal-title">Nuevo punto</h2>
+                </div>
+                <button class="modal-close" type="button" id="close-modal" aria-label="Cerrar">
+                    &times;
+                </button>
+            </div>
+
+            <input type="hidden" name="point_id" id="point-id">
+            <label for="point-name">Nombre</label>
+            <input id="point-name" name="name" maxlength="120" required>
+
+            <label for="point-description">Descripción</label>
+            <textarea id="point-description" name="description" rows="4"></textarea>
+
+            <div class="form-grid">
+                <div>
+                    <label for="point-latitude">Latitud</label>
+                    <input id="point-latitude" name="latitude" type="number" step="0.000001"
+                           min="-90" max="90" required>
+                </div>
+                <div>
+                    <label for="point-longitude">Longitud</label>
+                    <input id="point-longitude" name="longitude" type="number" step="0.000001"
+                           min="-180" max="180" required>
+                </div>
+            </div>
+
+            <label for="point-status">Estado</label>
+            <select id="point-status" name="status">
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+            </select>
+
+            <div class="modal-actions">
+                <button class="button button--primary" type="submit">Guardar</button>
+                <button class="button button--secondary" type="button" id="cancel-modal">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog class="point-modal delete-modal" id="delete-modal">
+        <form method="post" id="delete-form">
+            {% csrf_token %}
+            <div class="modal-heading">
+                <div>
+                    <p class="eyebrow">Eliminar punto</p>
+                    <h2>¿Confirmar eliminación?</h2>
+                </div>
+                <button class="modal-close" type="button" id="close-delete-modal" aria-label="Cerrar">
+                    &times;
+                </button>
+            </div>
+            <p>¿Desea eliminar el punto <strong id="delete-point-name"></strong>?</p>
+            <div class="modal-actions">
+                <button class="button button--danger" type="submit">
+                    Confirmar eliminación
+                </button>
+                <button class="button button--secondary" type="button" id="cancel-delete-modal">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </dialog>
 {% endblock %}
 
 {% block extra_scripts %}
