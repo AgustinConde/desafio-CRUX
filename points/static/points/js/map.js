@@ -137,7 +137,26 @@ function restoreMapState(map) {
 
     try {
         const state = JSON.parse(savedState);
-        map.setView([state.latitude, state.longitude], state.zoom);
+        const latitude = Number(state.latitude);
+        const longitude = Number(state.longitude);
+        const zoom = Number(state.zoom);
+        const isValidState =
+            Number.isFinite(latitude) &&
+            Number.isFinite(longitude) &&
+            Number.isFinite(zoom) &&
+            latitude >= worldBounds[0][0] &&
+            latitude <= worldBounds[1][0] &&
+            longitude >= worldBounds[0][1] &&
+            longitude <= worldBounds[1][1] &&
+            zoom >= 2.2 &&
+            zoom <= 18;
+
+        if (!isValidState) {
+            localStorage.removeItem(mapStateKey);
+            return false;
+        }
+
+        map.setView([latitude, longitude], zoom);
         return true;
     } catch (error) {
         localStorage.removeItem(mapStateKey);

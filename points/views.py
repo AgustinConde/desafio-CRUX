@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_GET
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import PointForm
@@ -66,6 +67,7 @@ class PointDeleteView(DeleteView):
         return super().form_valid(form)
 
 
+@require_GET
 def point_list_api(request):
     points = [
         {

@@ -102,6 +102,11 @@ class PointCrudTests(TestCase):
             ]
         })
 
+    def test_api_only_accepts_get(self):
+        response = self.client.post(reverse("points:api-list"))
+
+        self.assertEqual(response.status_code, 405)
+
 
 class SeedPointsCommandTests(TestCase):
     def test_seed_points_loads_examples_only_once(self):
