@@ -1,9 +1,10 @@
 :root {
-    --color-background: #f4f7fb;
+    --color-background: #eef0f2;
     --color-border: #d7e0ea;
     --color-primary: #001E37;
     --color-primary-dark: var(--color-primary);
     --color-secondary: #34B3B6;
+    --color-secondary-soft: #e3f5f4;
     --color-surface: #fff;
     --color-text: #1d2733;
     --color-muted: #607080;
@@ -82,6 +83,13 @@ h2 {
     margin-top: 0;
 }
 
+.section-title,
+.modal-title {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+}
+
 .eyebrow {
     color: var(--color-secondary);
     font-size: 0.75rem;
@@ -100,6 +108,14 @@ h2 {
 
 .map-toolbar p {
     margin: 0;
+}
+
+.map-instruction {
+    background: var(--color-secondary-soft);
+    border-left: 0.25rem solid var(--color-secondary);
+    border-radius: 0.35rem;
+    color: var(--color-primary-dark);
+    padding: 0.65rem 0.85rem;
 }
 
 .map,
@@ -187,6 +203,10 @@ th {
     text-transform: uppercase;
 }
 
+tbody tr:hover {
+    background: var(--color-secondary-soft);
+}
+
 .filters,
 .form-grid {
     display: flex;
@@ -210,6 +230,14 @@ textarea {
     padding: 0.6rem 0.7rem;
 }
 
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 0.2rem rgb(52 179 182 / 20%);
+    outline: none;
+}
+
 .button,
 .icon-action {
     border: 0;
@@ -227,10 +255,21 @@ textarea {
     color: var(--color-surface);
 }
 
+.button--primary:hover,
+.button--primary:focus-visible {
+    background: var(--color-secondary);
+}
+
 .button--secondary {
-    background: #e8eef4;
+    background: var(--color-secondary-soft);
+    border: 1px solid #a9dedd;
     color: var(--color-text);
     text-decoration: none;
+}
+
+.button--secondary:hover,
+.button--secondary:focus-visible {
+    background: #c9eceb;
 }
 
 .button--danger {
@@ -265,7 +304,7 @@ textarea {
 
 .icon-action:hover,
 .icon-action:focus-visible {
-    background: #e8eef4;
+    background: var(--color-secondary-soft);
 }
 
 .icon-action--danger {
@@ -314,10 +353,10 @@ textarea {
 }
 
 .message-list li {
-    background: #e7f5ec;
-    border: 1px solid #b7dfc4;
+    background: var(--color-secondary-soft);
+    border: 1px solid #a9dedd;
     border-radius: 0.4rem;
-    color: #155d2d;
+    color: var(--color-primary-dark);
     padding: 0.75rem 1rem;
 }
 

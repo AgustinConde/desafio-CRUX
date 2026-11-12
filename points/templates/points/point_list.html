@@ -15,7 +15,9 @@
 {% block content %}
     <section class="map-section" aria-label="Mapa de puntos">
         <div class="map-toolbar">
-            <p>Seleccione una ubicación en el mapa para crear un punto.</p>
+            <p class="map-instruction">
+                Seleccione una ubicación en el mapa para crear un punto.
+            </p>
             <button class="button button--primary" type="button" id="new-point-button">
                 Nuevo punto
             </button>
@@ -29,7 +31,7 @@
 
     <section class="points-panel" aria-labelledby="points-title">
         <div class="section-heading">
-            <h2 id="points-title">Puntos registrados</h2>
+            <h2 class="section-title" id="points-title">Puntos registrados</h2>
             <div class="filters">
                 <label>
                     Buscar
@@ -115,11 +117,11 @@
     </section>
 
     <dialog class="point-modal" id="point-modal">
-        <form method="post" id="point-form">
+        <form method="post" id="point-form" novalidate>
             {% csrf_token %}
             <div class="modal-heading">
                 <div>
-                    <h2 id="modal-title">Nuevo punto</h2>
+                    <h2 class="modal-title" id="modal-title">Nuevo punto</h2>
                 </div>
                 <button class="modal-close" type="button" id="close-modal" aria-label="Cerrar">
                     &times;
@@ -129,6 +131,7 @@
             <input type="hidden" name="point_id" id="point-id">
             <label for="point-name">Nombre</label>
             <input id="point-name" name="name" maxlength="120" required>
+            <p class="field-error" id="point-name-error" role="alert" hidden></p>
 
             <label for="point-description">Descripción</label>
             <textarea id="point-description" name="description" rows="4"></textarea>
@@ -138,11 +141,13 @@
                     <label for="point-latitude">Latitud</label>
                     <input id="point-latitude" name="latitude" type="number" step="0.000001"
                            min="-90" max="90" required>
+                    <p class="field-error" id="point-latitude-error" role="alert" hidden></p>
                 </div>
                 <div>
                     <label for="point-longitude">Longitud</label>
                     <input id="point-longitude" name="longitude" type="number" step="0.000001"
                            min="-180" max="180" required>
+                    <p class="field-error" id="point-longitude-error" role="alert" hidden></p>
                 </div>
             </div>
 
