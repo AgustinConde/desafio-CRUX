@@ -28,9 +28,13 @@ class PointCreateView(CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        errors = " ".join(
+            error for field_errors in form.errors.values()
+            for error in field_errors
+        )
         messages.error(
             self.request,
-            "No se pudo crear el punto. Revisá los datos ingresados.",
+            f"No se pudo crear el punto. {errors}",
         )
         return redirect(self.success_url)
 
@@ -48,9 +52,13 @@ class PointUpdateView(UpdateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        errors = " ".join(
+            error for field_errors in form.errors.values()
+            for error in field_errors
+        )
         messages.error(
             self.request,
-            "No se pudo actualizar el punto. Revisá los datos ingresados.",
+            f"No se pudo actualizar el punto. {errors}",
         )
         return redirect(self.success_url)
 
