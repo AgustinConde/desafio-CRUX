@@ -33,12 +33,12 @@
         <div class="section-heading">
             <h2 class="section-title" id="points-title">Puntos registrados</h2>
             <div class="filters">
-                <label>
-                    Buscar
+                <label class="filter-field">
+                    <span>Buscar</span>
                     <input type="search" id="point-search" placeholder="Nombre o descripción">
                 </label>
-                <label>
-                    Estado
+                <label class="filter-field">
+                    <span>Estado</span>
                     <select id="status-filter">
                         <option value="">Todos</option>
                         <option value="active">Activos</option>
@@ -48,7 +48,14 @@
             </div>
         </div>
 
-        <table>
+        <table class="points-table">
+            <colgroup>
+                <col class="points-table__name">
+                <col class="points-table__status">
+                <col class="points-table__coordinate">
+                <col class="points-table__coordinate">
+                <col class="points-table__actions">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Nombre</th>

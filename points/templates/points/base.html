@@ -12,7 +12,7 @@
 <body>
     <header class="site-header">
         <div class="site-header__content">
-            <a href="{% url 'points:list' %}">Puntos geográficos</a>
+            <a class="brand-link" href="{% url 'points:list' %}">Puntos geográficos</a>
             <nav aria-label="Navegación principal">
                 <a
                     class="github-link"
@@ -30,18 +30,26 @@
         </div>
     </header>
 
-    {% if messages %}
-        <ul class="message-list">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="page-scroll">
+        {% if messages %}
+            <ul class="message-list">
+                {% for message in messages %}
+                    <li>
+                        <span>{{ message }}</span>
+                        <button class="message-close" type="button" aria-label="Cerrar mensaje">
+                            &times;
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 
     {% block extra_scripts %}{% endblock %}
+    <script src="{% static 'points/js/notifications.js' %}"></script>
 </body>
 </html>
