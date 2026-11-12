@@ -7,6 +7,10 @@ const deleteForm = document.querySelector("#delete-form");
 const pointData = new Map();
 const markers = new Map();
 const mapStateKey = "points-map-state";
+const worldBounds = [
+    [-85.051129, -180],
+    [85.051129, 180],
+];
 
 function clearFieldError(field) {
     field.classList.remove("field-invalid");
@@ -159,7 +163,15 @@ function filterPoints() {
 }
 
 if (mapElement) {
-    const map = L.map(mapElement).setView(defaultCenter, 12);
+    const map = L.map(mapElement, {
+        maxBounds: worldBounds,
+        maxBoundsViscosity: 1,
+        maxZoom: 18,
+        minZoom: 2.2,
+        zoomDelta: 0.5,
+        zoomSnap: 0.5,
+        worldCopyJump: false,
+    }).setView(defaultCenter, 12);
 
     const primaryLayer = L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/" +
@@ -171,6 +183,7 @@ if (mapElement) {
                 "&copy; OpenStreetMap contributors",
             keepBuffer: 0,
             maxZoom: 20,
+            noWrap: true,
             updateWhenIdle: true,
             updateWhenZooming: false,
         },
@@ -190,6 +203,7 @@ if (mapElement) {
                 "OpenStreetMap contributors</a>",
             keepBuffer: 0,
             maxZoom: 19,
+            noWrap: true,
             updateWhenIdle: true,
             updateWhenZooming: false,
         }).addTo(map);
@@ -197,6 +211,15 @@ if (mapElement) {
 
     map.on("moveend", () => saveMapState(map));
     map.on("click", (event) => {
+        const { lat, lng } = event.latlng;
+        if (
+            lat < worldBounds[0][0] ||
+            lat > worldBounds[1][0] ||
+            lng < worldBounds[0][1] ||
+            lng > worldBounds[1][1]
+        ) {
+            return;
+        }
         openPointModal(null, [event.latlng.lat, event.latlng.lng]);
     });
 
