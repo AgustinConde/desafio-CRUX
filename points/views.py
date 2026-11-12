@@ -19,6 +19,14 @@ class PointCreateView(CreateView):
     template_name = "points/point_form.html"
     success_url = reverse_lazy("points:list")
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.GET.get("lat"):
+            initial["latitude"] = self.request.GET["lat"]
+        if self.request.GET.get("lng"):
+            initial["longitude"] = self.request.GET["lng"]
+        return initial
+
     def form_valid(self, form):
         messages.success(self.request, "El punto se creó correctamente.")
         return super().form_valid(form)

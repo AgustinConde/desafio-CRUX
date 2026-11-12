@@ -1,0 +1,31 @@
+.map {
+    height: 420px;
+    margin-bottom: 0.75rem;
+}
+
+.map-legend {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.map-legend span {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.legend-marker {
+    border-radius: 50%;
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+}
+
+.legend-marker--active {
+    background-color: #198754;
+}
+
+.legend-marker--inactive {
+    background-color: #6c757d;
+}

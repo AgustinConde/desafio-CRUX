@@ -1,9 +1,29 @@
 {% extends "points/base.html" %}
+{% load static %}
 
 {% block title %}Listado de puntos{% endblock %}
 
+{% block extra_head %}
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    >
+{% endblock %}
+
 {% block content %}
     <h1>Listado de puntos</h1>
+
+    <section aria-labelledby="map-title">
+        <h2 id="map-title">Mapa</h2>
+        <p>Seleccioná una ubicación en el mapa para crear un punto.</p>
+        <div id="map" class="map" aria-label="Mapa de puntos geográficos"></div>
+        <div class="map-legend" aria-label="Referencias del mapa">
+            <span><i class="legend-marker legend-marker--active"></i>Activo</span>
+            <span><i class="legend-marker legend-marker--inactive"></i>Inactivo</span>
+        </div>
+    </section>
 
     {% if points %}
         <table>
@@ -34,4 +54,13 @@
     {% else %}
         <p>No hay puntos registrados.</p>
     {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
+    <script src="{% static 'points/js/map.js' %}"></script>
 {% endblock %}
