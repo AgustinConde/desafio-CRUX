@@ -557,4 +557,8 @@ textarea:focus {
         display: block;
         overflow-x: auto;
     }
+
+    .points-table {
+        min-width: 700px;
+    }
 }

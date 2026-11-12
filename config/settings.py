@@ -1,11 +1,14 @@
 import os
+from secrets import token_urlsafe
 from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "secret-key")
-DEBUG = os.getenv("DEBUG", "True").lower() in {"1", "true", "yes"}
+SECRET_KEY = os.getenv("SECRET_KEY") or (
+    f"django-insecure-{token_urlsafe(32)}"
+)
+DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
