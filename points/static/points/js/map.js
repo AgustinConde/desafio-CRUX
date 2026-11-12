@@ -265,6 +265,12 @@ if (mapElement) {
             event.preventDefault();
             return;
         }
+        document.querySelector("#point-latitude").value = Number(
+            document.querySelector("#point-latitude").value,
+        ).toFixed(6);
+        document.querySelector("#point-longitude").value = Number(
+            document.querySelector("#point-longitude").value,
+        ).toFixed(6);
         saveMapState(map);
     });
 
