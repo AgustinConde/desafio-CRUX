@@ -6,8 +6,8 @@ interactivo.
 
 ## Tecnologías
 
-- Python 3.12
-- Django 4.2
+- Python 3.10+
+- Django 5.2
 - SQLite
 - HTML, CSS y JavaScript
 - Leaflet
@@ -73,6 +73,8 @@ carga automáticamente:
 
 - **UTN Haedo**: `-34.640556, -58.601944`. 
 - **CRUX MARINE**: `-34.661603, -58.641822`.
+- **Obelisco de Buenos Aires**: `-34.603700, -58.381600`.
+- **Puerto Madero**: `-34.611800, -58.363700` (inactivo).
 
 Si la base ya contiene puntos, no se agregan ni se modifican datos existentes.
 
@@ -100,6 +102,20 @@ En macOS/Linux:
 
 ```bash
 source .venv/bin/activate
+```
+
+Para ejecutar el servidor local con archivos estáticos:
+
+En Windows PowerShell:
+
+```powershell
+$env:DEBUG="True"
+```
+
+En macOS/Linux:
+
+```bash
+export DEBUG=True
 ```
 
 Instalar dependencias y preparar la base:
