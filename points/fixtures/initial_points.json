@@ -1,0 +1,24 @@
+[
+  {
+    "model": "points.point",
+    "pk": 1,
+    "fields": {
+      "name": "UTN Haedo",
+      "description": "Universidad Tecnológica Nacional - Facultad Regional Haedo.",
+      "latitude": "-34.640556",
+      "longitude": "-58.601944",
+      "status": "active"
+    }
+  },
+  {
+    "model": "points.point",
+    "pk": 2,
+    "fields": {
+      "name": "CRUX MARINE",
+      "description": "PITAM, Av. Figueroa Alcorta 500, Castelar.",
+      "latitude": "-34.661603",
+      "longitude": "-58.641822",
+      "status": "active"
+    }
+  }
+]

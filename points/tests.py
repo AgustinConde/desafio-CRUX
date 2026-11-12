@@ -1,4 +1,7 @@
+from io import StringIO
+
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
@@ -98,3 +101,15 @@ class PointCrudTests(TestCase):
                 }
             ]
         })
+
+
+class SeedPointsCommandTests(TestCase):
+    def test_seed_points_loads_examples_only_once(self):
+        output = StringIO()
+
+        call_command("seed_points", stdout=output)
+        call_command("seed_points", stdout=output)
+
+        self.assertEqual(Point.objects.count(), 2)
+        self.assertTrue(Point.objects.filter(name="UTN Haedo").exists())
+        self.assertTrue(Point.objects.filter(name="CRUX MARINE").exists())
