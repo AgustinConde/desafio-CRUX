@@ -1,11 +1,13 @@
 :root {
     --color-background: #f4f7fb;
     --color-border: #d7e0ea;
-    --color-primary: #1769aa;
-    --color-primary-dark: #0d4773;
+    --color-primary: #001E37;
+    --color-primary-dark: var(--color-primary);
+    --color-secondary: #34B3B6;
     --color-surface: #fff;
     --color-text: #1d2733;
     --color-muted: #607080;
+    --font-heading: "Trebuchet MS", "Segoe UI", sans-serif;
 }
 
 * {
@@ -76,7 +78,17 @@ main {
 
 h1,
 h2 {
+    font-family: var(--font-heading);
     margin-top: 0;
+}
+
+.eyebrow {
+    color: var(--color-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
 }
 
 .map-toolbar {
