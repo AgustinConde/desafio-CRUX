@@ -15,6 +15,15 @@ class PointModelTests(TestCase):
         with self.assertRaises(ValidationError):
             point.full_clean()
 
+    def test_coordinates_accept_valid_boundaries(self):
+        point = Point(
+            name="Boundary point",
+            latitude=-90,
+            longitude=180,
+        )
+
+        point.full_clean()
+
 
 class PointCrudTests(TestCase):
     def setUp(self):
@@ -44,6 +53,21 @@ class PointCrudTests(TestCase):
         response = self.client.get(reverse("points:create"))
 
         self.assertEqual(response.status_code, 405)
+
+    def test_create_point_rejects_invalid_coordinates(self):
+        response = self.client.post(
+            reverse("points:create"),
+            {
+                "name": "Invalid point",
+                "description": "Invalid coordinates",
+                "latitude": "91",
+                "longitude": "-58.38",
+                "status": Point.Status.ACTIVE,
+            },
+        )
+
+        self.assertRedirects(response, reverse("points:list"))
+        self.assertFalse(Point.objects.filter(name="Invalid point").exists())
 
     def test_update_point(self):
         response = self.client.post(
@@ -115,6 +139,12 @@ class SeedPointsCommandTests(TestCase):
         call_command("seed_points", stdout=output)
         call_command("seed_points", stdout=output)
 
-        self.assertEqual(Point.objects.count(), 2)
+        self.assertEqual(Point.objects.count(), 4)
         self.assertTrue(Point.objects.filter(name="UTN Haedo").exists())
         self.assertTrue(Point.objects.filter(name="CRUX MARINE").exists())
+        self.assertTrue(
+            Point.objects.filter(
+                name="Puerto Madero",
+                status=Point.Status.INACTIVE,
+            ).exists()
+        )

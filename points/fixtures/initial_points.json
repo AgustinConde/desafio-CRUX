@@ -20,5 +20,27 @@
       "longitude": "-58.641822",
       "status": "active"
     }
+  },
+  {
+    "model": "points.point",
+    "pk": 3,
+    "fields": {
+      "name": "Obelisco de Buenos Aires",
+      "description": "Monumento histórico en el centro de Buenos Aires.",
+      "latitude": "-34.6037",
+      "longitude": "-58.3816",
+      "status": "active"
+    }
+  },
+  {
+    "model": "points.point",
+    "pk": 4,
+    "fields": {
+      "name": "Puerto Madero",
+      "description": "Zona portuaria y turística de Buenos Aires.",
+      "latitude": "-34.6118",
+      "longitude": "-58.3637",
+      "status": "inactive"
+    }
   }
 ]
