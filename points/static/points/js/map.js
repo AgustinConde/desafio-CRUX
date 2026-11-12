@@ -8,8 +8,75 @@ const pointData = new Map();
 const markers = new Map();
 const mapStateKey = "points-map-state";
 
+function clearFieldError(field) {
+    field.classList.remove("field-invalid");
+    field.removeAttribute("aria-invalid");
+    field.removeAttribute("aria-describedby");
+    document.querySelector(`#${field.id}-error`).hidden = true;
+}
+
+function setFieldError(field, message) {
+    const error = document.querySelector(`#${field.id}-error`);
+    field.classList.add("field-invalid");
+    field.setAttribute("aria-invalid", "true");
+    field.setAttribute("aria-describedby", error.id);
+    error.textContent = message;
+    error.hidden = false;
+}
+
+function clearFormErrors() {
+    ["#point-name", "#point-latitude", "#point-longitude"].forEach((selector) => {
+        clearFieldError(document.querySelector(selector));
+    });
+}
+
+function validatePointForm() {
+    const name = document.querySelector("#point-name");
+    const latitude = document.querySelector("#point-latitude");
+    const longitude = document.querySelector("#point-longitude");
+    let firstInvalidField = null;
+
+    clearFormErrors();
+
+    if (!name.value.trim()) {
+        setFieldError(name, "Ingresá un nombre para el punto.");
+        firstInvalidField = name;
+    }
+
+    const coordinates = [
+        { field: latitude, min: -90, max: 90, label: "La latitud" },
+        { field: longitude, min: -180, max: 180, label: "La longitud" },
+    ];
+
+    coordinates.forEach(({ field, min, max, label }) => {
+        const value = Number(field.value);
+        if (!field.value || !Number.isFinite(value)) {
+            setFieldError(field, `${label} es obligatoria.`);
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
+        } else if (value < min || value > max) {
+            setFieldError(
+                field,
+                `${label} debe estar entre ${min} y ${max}.`,
+            );
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
+        }
+    });
+
+    if (firstInvalidField) {
+        firstInvalidField.focus();
+        return false;
+    }
+
+    return true;
+}
+
 function openPointModal(point, coordinates) {
     const isEditing = Boolean(point);
+    clearFormErrors();
     document.querySelector("#modal-title").textContent = isEditing
         ? "Editar punto"
         : "Nuevo punto";
@@ -145,7 +212,19 @@ if (mapElement) {
     document.querySelector("#point-search").addEventListener("input", filterPoints);
     document.querySelector("#status-filter").addEventListener("change", filterPoints);
 
-    pointForm.addEventListener("submit", () => saveMapState(map));
+    ["#point-name", "#point-latitude", "#point-longitude"].forEach((selector) => {
+        document.querySelector(selector).addEventListener("input", (event) => {
+            clearFieldError(event.target);
+        });
+    });
+
+    pointForm.addEventListener("submit", (event) => {
+        if (!validatePointForm()) {
+            event.preventDefault();
+            return;
+        }
+        saveMapState(map);
+    });
 
     fetch("/api/points/")
         .then((response) => {

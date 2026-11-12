@@ -238,6 +238,22 @@ textarea:focus {
     outline: none;
 }
 
+.field-invalid {
+    border-color: #b42318;
+}
+
+.field-invalid:focus {
+    border-color: #b42318;
+    box-shadow: 0 0 0 0.2rem rgb(180 35 24 / 20%);
+}
+
+.field-error {
+    color: #b42318;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0.15rem 0 0;
+}
+
 .button,
 .icon-action {
     border: 0;
