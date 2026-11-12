@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -42,3 +43,19 @@ class PointDeleteView(DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "El punto se eliminó correctamente.")
         return super().form_valid(form)
+
+
+def point_list_api(request):
+    points = [
+        {
+            "id": point.id,
+            "name": point.name,
+            "description": point.description,
+            "latitude": float(point.latitude),
+            "longitude": float(point.longitude),
+            "status": point.status,
+            "status_label": point.get_status_display(),
+        }
+        for point in Point.objects.all()
+    ]
+    return JsonResponse({"points": points})
