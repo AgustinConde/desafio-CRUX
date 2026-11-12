@@ -37,21 +37,10 @@ class PointCrudTests(TestCase):
         self.assertRedirects(response, reverse("points:list"))
         self.assertTrue(Point.objects.filter(name="New point").exists())
 
-    def test_create_form_prefills_coordinates_from_query_string(self):
-        response = self.client.get(
-            reverse("points:create"),
-            {"lat": "-34.603700", "lng": "-58.381600"},
-        )
+    def test_create_endpoint_only_accepts_post(self):
+        response = self.client.get(reverse("points:create"))
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context["form"].initial["latitude"],
-            "-34.603700",
-        )
-        self.assertEqual(
-            response.context["form"].initial["longitude"],
-            "-58.381600",
-        )
+        self.assertEqual(response.status_code, 405)
 
     def test_update_point(self):
         response = self.client.post(
@@ -77,6 +66,20 @@ class PointCrudTests(TestCase):
 
         self.assertRedirects(response, reverse("points:list"))
         self.assertFalse(Point.objects.filter(pk=self.point.pk).exists())
+
+    def test_update_endpoint_only_accepts_post(self):
+        response = self.client.get(
+            reverse("points:update", args=[self.point.pk])
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_delete_endpoint_only_accepts_post(self):
+        response = self.client.get(
+            reverse("points:delete", args=[self.point.pk])
+        )
+
+        self.assertEqual(response.status_code, 405)
 
     def test_api_returns_points_as_json(self):
         response = self.client.get(reverse("points:api-list"))

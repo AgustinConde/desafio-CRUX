@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponseNotAllowed, JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -16,37 +17,49 @@ class PointListView(ListView):
 class PointCreateView(CreateView):
     model = Point
     form_class = PointForm
-    template_name = "points/point_form.html"
     success_url = reverse_lazy("points:list")
 
-    def get_initial(self):
-        initial = super().get_initial()
-        if self.request.GET.get("lat"):
-            initial["latitude"] = self.request.GET["lat"]
-        if self.request.GET.get("lng"):
-            initial["longitude"] = self.request.GET["lng"]
-        return initial
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(["POST"])
 
     def form_valid(self, form):
         messages.success(self.request, "El punto se creó correctamente.")
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            "No se pudo crear el punto. Revisá los datos ingresados.",
+        )
+        return redirect(self.success_url)
+
 
 class PointUpdateView(UpdateView):
     model = Point
     form_class = PointForm
-    template_name = "points/point_form.html"
     success_url = reverse_lazy("points:list")
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(["POST"])
 
     def form_valid(self, form):
         messages.success(self.request, "El punto se actualizó correctamente.")
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            "No se pudo actualizar el punto. Revisá los datos ingresados.",
+        )
+        return redirect(self.success_url)
+
 
 class PointDeleteView(DeleteView):
     model = Point
-    template_name = "points/point_confirm_delete.html"
     success_url = reverse_lazy("points:list")
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(["POST"])
 
     def form_valid(self, form):
         messages.success(self.request, "El punto se eliminó correctamente.")
