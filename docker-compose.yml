@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-secret-key}
+      DEBUG: ${DEBUG:-True}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
