@@ -1,0 +1,81 @@
+from django.core.exceptions import ValidationError
+from django.test import TestCase
+from django.urls import reverse
+
+from .models import Point
+
+
+class PointModelTests(TestCase):
+    def test_coordinates_must_be_within_valid_ranges(self):
+        point = Point(name="Invalid point", latitude=91, longitude=-181)
+
+        with self.assertRaises(ValidationError):
+            point.full_clean()
+
+
+class PointCrudTests(TestCase):
+    def setUp(self):
+        self.point = Point.objects.create(
+            name="Original point",
+            description="Original description",
+            latitude=-34.6037,
+            longitude=-58.3816,
+        )
+
+    def test_create_point(self):
+        response = self.client.post(
+            reverse("points:create"),
+            {
+                "name": "New point",
+                "description": "A new description",
+                "latitude": "-34.60",
+                "longitude": "-58.38",
+                "status": Point.Status.ACTIVE,
+            },
+        )
+
+        self.assertRedirects(response, reverse("points:list"))
+        self.assertTrue(Point.objects.filter(name="New point").exists())
+
+    def test_update_point(self):
+        response = self.client.post(
+            reverse("points:update", args=[self.point.pk]),
+            {
+                "name": "Updated point",
+                "description": "Updated description",
+                "latitude": "-34.60",
+                "longitude": "-58.38",
+                "status": Point.Status.INACTIVE,
+            },
+        )
+
+        self.assertRedirects(response, reverse("points:list"))
+        self.point.refresh_from_db()
+        self.assertEqual(self.point.name, "Updated point")
+        self.assertEqual(self.point.status, Point.Status.INACTIVE)
+
+    def test_delete_point(self):
+        response = self.client.post(
+            reverse("points:delete", args=[self.point.pk])
+        )
+
+        self.assertRedirects(response, reverse("points:list"))
+        self.assertFalse(Point.objects.filter(pk=self.point.pk).exists())
+
+    def test_api_returns_points_as_json(self):
+        response = self.client.get(reverse("points:api-list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {
+            "points": [
+                {
+                    "id": self.point.id,
+                    "name": "Original point",
+                    "description": "Original description",
+                    "latitude": -34.6037,
+                    "longitude": -58.3816,
+                    "status": "active",
+                    "status_label": "Activo",
+                }
+            ]
+        })

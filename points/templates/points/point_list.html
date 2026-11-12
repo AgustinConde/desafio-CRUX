@@ -1,0 +1,37 @@
+{% extends "points/base.html" %}
+
+{% block title %}Listado de puntos{% endblock %}
+
+{% block content %}
+    <h1>Listado de puntos</h1>
+
+    {% if points %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for point in points %}
+                    <tr>
+                        <td>{{ point.name }}</td>
+                        <td>{{ point.get_status_display }}</td>
+                        <td>{{ point.latitude }}</td>
+                        <td>{{ point.longitude }}</td>
+                        <td>
+                            <a href="{% url 'points:update' point.pk %}">Editar</a>
+                            <a href="{% url 'points:delete' point.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay puntos registrados.</p>
+    {% endif %}
+{% endblock %}

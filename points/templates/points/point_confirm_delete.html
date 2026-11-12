@@ -1,0 +1,14 @@
+{% extends "points/base.html" %}
+
+{% block title %}Eliminar punto{% endblock %}
+
+{% block content %}
+    <h1>Eliminar punto</h1>
+    <p>¿Desea eliminar el punto "{{ object }}"?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar eliminación</button>
+        <a href="{% url 'points:list' %}">Cancelar</a>
+    </form>
+{% endblock %}
